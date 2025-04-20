@@ -26,24 +26,24 @@ server.get('/api/tags', (req, res) => {
   const query = req.query.criteria;
 
   // Filter the tags based on the query
-    const filteredTags = tags.filter(tag => tag.name.toLowerCase().includes(query.toLowerCase()));
-    res.status(200).json(filteredTags); // Send back the filtered tags as JSON
+  const filteredTags = tags.filter(tag => tag.name.toLowerCase().includes(query.toLowerCase()));
+  res.status(200).json(filteredTags); // Send back the filtered tags as JSON
 
 });
 
 server.get('/api/recipesByTags/', (req, res) => {
   setTimeout(() => {
-  const tagName = req.query.tagName;
-  const filteredRecipes = recipes.filter(recipe => recipe.tags?.toLowerCase().includes(tagName.toLowerCase()));
-  res.status(200).json(filteredRecipes);
-}, 4000);
+    const tagName = req.query.tagName;
+    const filteredRecipes = recipes.filter(recipe => recipe.tags?.toLowerCase().includes(tagName.toLowerCase()));
+    res.status(200).json(filteredRecipes);
+  }, 4000);
 });
 
 
 server.post('/api/recipes/save', (req, res) => {
   setTimeout(() => {
-  res.status(200).json(req.body);
-}, 4000);
+    res.status(200).json(req.body);
+  }, 4000);
 
 
 })
@@ -97,15 +97,15 @@ function startTimer(ws) {
       "cookTime": "35",
       "servings": 10,
       "ingredients": [" 1 cup white sugar", "½ cup butter", "2 eggs", "2 teaspoons vanilla extract",
-      "1 ½ cups all-purpose flour","1 ¾ teaspoons baking powder",
-      "¾ cup milk",
-      "1 tablespoon lemon zest",
-      "1 tablespoon lemon juice"
+        "1 ½ cups all-purpose flour", "1 ¾ teaspoons baking powder",
+        "¾ cup milk",
+        "1 tablespoon lemon zest",
+        "1 tablespoon lemon juice"
       ],
-      "steps": ["Step 1:Preheat the oven to 350 degrees F (175 degrees C). Grease a 9-inch square baking pan", 
-      "Step 2: Beat sugar and butter together in a mixing bowl using an electric mixer until light and fluffy. Beat in eggs and vanilla extract",
-      "Step 3: Sift flour and baking powder together in a separate bowl; add to creamed mixture. Pour in milk, lemon zest, and lemon juice and mix until you achieve a smooth batter. Spoon batter into the prepared pan.",
-      "Step 4: Bake in the preheated oven until a toothpick inserted into the center comes out clean, about 35 minutes."
+      "steps": ["Step 1:Preheat the oven to 350 degrees F (175 degrees C). Grease a 9-inch square baking pan",
+        "Step 2: Beat sugar and butter together in a mixing bowl using an electric mixer until light and fluffy. Beat in eggs and vanilla extract",
+        "Step 3: Sift flour and baking powder together in a separate bowl; add to creamed mixture. Pour in milk, lemon zest, and lemon juice and mix until you achieve a smooth batter. Spoon batter into the prepared pan.",
+        "Step 4: Bake in the preheated oven until a toothpick inserted into the center comes out clean, about 35 minutes."
       ],
       "imageUrl": "chicken.jpg"
     }]));

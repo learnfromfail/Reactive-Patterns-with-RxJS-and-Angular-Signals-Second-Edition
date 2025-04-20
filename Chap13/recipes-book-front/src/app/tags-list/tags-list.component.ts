@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as recipeTags from '../core/model/tags';
-import { TagModule } from 'primeng/tag';
+// import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { RecipesService } from '../core/services/recipes.service';
