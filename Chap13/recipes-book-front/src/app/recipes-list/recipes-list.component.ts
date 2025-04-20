@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipesService } from '../core/services/recipes.service';
 import { DataViewModule } from 'primeng/dataview';
@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
-import { combineLatest,map } from 'rxjs';
+import { combineLatest, map, Subscription } from 'rxjs';
 import { Recipe } from '../core/model/recipe.model';
 import { TagsListComponent } from '../tags-list/tags-list.component';
 import { SharedDataService } from '../core/services/shared-data.service';
@@ -19,7 +19,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-recipes-list',
   standalone: true,
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     DataViewModule,
     PanelModule,
     DialogModule,
@@ -27,31 +28,56 @@ import { Router } from '@angular/router';
     InputTextModule,
     ButtonModule,
     RippleModule,
-    RatingModule, FormsModule,
-    TagsListComponent
+    RatingModule,
+    FormsModule,
+    TagsListComponent,
   ],
   templateUrl: './recipes-list.component.html',
   styleUrls: ['./recipes-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RecipesListComponent {
-  recipes$ = this.service.recipes$;
+export class RecipesListComponent implements OnInit, OnDestroy {
+  constructor(
+    private service: RecipesService,
+    private sharedService: SharedDataService,
+    private router: Router
+  ) {}
+
+  recipes!: Recipe[];
+  subscription!: Subscription;
+
+  ngOnInit(): void {
+    this.subscription = this.service.getRecipes().subscribe((result) => {
+      this.recipes = result;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+
+
+  }
+
+  recipes$ = this.service.recipes$; //be replaced
   /* The readonly stream */
   filterRecipesAction$ = this.service.filterRecipesAction$;
-  filteredRecipes$ = combineLatest([this.recipes$, this.filterRecipesAction$]).pipe(
+
+  filteredRecipes$ = combineLatest([
+    this.recipes$,
+    this.filterRecipesAction$,
+  ]).pipe(
     map(([recipes, filter]: [Recipe[], Recipe]) => {
       const filterTitle = filter?.title?.toLowerCase() ?? '';
-      return recipes.filter(recipe => recipe.title?.toLowerCase()
-        .includes(filterTitle))
+      return recipes.filter((recipe) =>
+        recipe.title?.toLowerCase().includes(filterTitle)
+      );
     })
   );
 
-  constructor(private service: RecipesService, private sharedService: SharedDataService, private router: Router) {
+  editRecipe(recipe: Recipe) {
+    this.sharedService.updateSelectedRecipe(recipe);
+    this.router.navigate(['/recipes/details']);
   }
 
-  editRecipe(recipe: Recipe) {
-    this.sharedService.updateSelectedRecipe(recipe); 
-    this.router.navigate(['/recipes/details']); 
- } 
+
 }

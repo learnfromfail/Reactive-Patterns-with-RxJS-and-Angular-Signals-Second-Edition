@@ -6,21 +6,22 @@ import { BehaviorSubject, Observable } from 'rxjs';
 const BASE_PATH = environment.basePath;
 import { Tag } from '../model/tags';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class RecipesService {
+  constructor(private http: HttpClient) {}
 
+  getRecipes(): Observable<Recipe[]> {
+    return this.http.get<Recipe[]>(`${BASE_PATH}/recipes`);
+  }
 
   recipes$ = this.http.get<Recipe[]>(`${BASE_PATH}/recipes`);
   private filterRecipeSubject = new BehaviorSubject<Recipe>({ title: '' });
   filterRecipesAction$ = this.filterRecipeSubject.asObservable();
+
   private selectedTags = new BehaviorSubject<string>('');
   selectedTags$ = this.selectedTags.asObservable();
-
-  constructor(private http: HttpClient) { }
 
   updateFilter(criteria: Recipe) {
     this.filterRecipeSubject.next(criteria);
@@ -35,11 +36,14 @@ export class RecipesService {
   }
 
   searchTags(term: string): Observable<Tag[]> {
-    return this.http.get<Tag[]>(`${BASE_PATH}/tags`, { params: { criteria: term } });
+    return this.http.get<Tag[]>(`${BASE_PATH}/tags`, {
+      params: { criteria: term },
+    });
   }
 
   getRecipesByTag(name: string): Observable<Recipe[]> {
-    return this.http.get<Recipe[]>(`${BASE_PATH}/recipesByTags/`, { params: { tagName: name } });
+    return this.http.get<Recipe[]>(`${BASE_PATH}/recipesByTags/`, {
+      params: { tagName: name },
+    });
   }
-
 }
