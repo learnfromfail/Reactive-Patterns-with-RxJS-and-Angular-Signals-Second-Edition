@@ -10,13 +10,14 @@ import { Tag } from '../model/tags';
   providedIn: 'root',
 })
 export class RecipesService {
+  recipes$ = this.http.get<Recipe[]>(`${BASE_PATH}/recipes`);
+
   constructor(private http: HttpClient) {}
 
   getRecipes(): Observable<Recipe[]> {
     return this.http.get<Recipe[]>(`${BASE_PATH}/recipes`);
   }
 
-  recipes$ = this.http.get<Recipe[]>(`${BASE_PATH}/recipes`);
   private filterRecipeSubject = new BehaviorSubject<Recipe>({ title: '' });
   filterRecipesAction$ = this.filterRecipeSubject.asObservable();
 

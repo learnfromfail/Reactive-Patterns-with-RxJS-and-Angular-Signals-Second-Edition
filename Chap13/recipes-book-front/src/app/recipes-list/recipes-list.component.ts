@@ -41,6 +41,8 @@ export class RecipesListComponent {
   recipes!: Recipe[];
   destroy$ = new Subject<void>();
 
+  recipes$= this.service.recipes$;
+
   constructor(
     private service: RecipesService,
     private sharedService: SharedDataService,
@@ -51,8 +53,6 @@ export class RecipesListComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((result) => (this.recipes = result));
   }
-
-  recipes$ = this.service.recipes$; //be replaced
   /* The readonly stream */
   filterRecipesAction$ = this.service.filterRecipesAction$;
 
