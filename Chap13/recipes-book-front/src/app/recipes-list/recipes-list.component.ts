@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipesService } from '../core/services/recipes.service';
 import { DataViewModule } from 'primeng/dataview';
@@ -15,11 +10,12 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
-import { combineLatest, map, Subject, Subscription, takeUntil } from 'rxjs';
+import { combineLatest, map, Subject } from 'rxjs';
 import { Recipe } from '../core/model/recipe.model';
 import { TagsListComponent } from '../tags-list/tags-list.component';
 import { SharedDataService } from '../core/services/shared-data.service';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipes-list',
@@ -41,28 +37,19 @@ import { Router } from '@angular/router';
   styleUrls: ['./recipes-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RecipesListComponent implements OnInit, OnDestroy {
+export class RecipesListComponent {
+  recipes!: Recipe[];
+  destroy$ = new Subject<void>();
+
   constructor(
     private service: RecipesService,
     private sharedService: SharedDataService,
     private router: Router
-  ) {}
-
-  recipes!: Recipe[];
-  destroy$ = new Subject<void>();
-
-  ngOnInit(): void {
+  ) {
     this.service
       .getRecipes()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result) => {
-        this.recipes = result;
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+      .pipe(takeUntilDestroyed())
+      .subscribe((result) => (this.recipes = result));
   }
 
   recipes$ = this.service.recipes$; //be replaced
