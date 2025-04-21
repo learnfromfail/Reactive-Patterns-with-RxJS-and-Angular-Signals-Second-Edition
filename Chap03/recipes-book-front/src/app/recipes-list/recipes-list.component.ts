@@ -9,7 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { RatingModule } from 'primeng/rating';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule } from '@angular/forms';
+import { combineLatest, map } from 'rxjs';
+import { Recipe } from '../core/model/recipe.model';
 
 @Component({
   selector: 'app-recipes-list',
@@ -31,7 +33,21 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecipesListComponent {
+  /*Define The data stream */
   recipes$ = this.service.recipes$;
+  filterRecipesAction$ = this.service.filterRecipesAction$;
 
-  constructor(private service: RecipesService) {}
+  filteredRecipes$ = combineLatest([
+    this.recipes$,
+    this.filterRecipesAction$,
+  ]).pipe(
+    map(([recipes, filter]: [Recipe[], Recipe]) => {
+      const filterTitle = filter?.title?.toLowerCase() ?? '';
+      return recipes.filter((recipe) =>
+        recipe.title?.toLowerCase().includes(filterTitle)
+      );
+    })
+  );
+
+  constructor(private service: RecipesService, private fb: FormBuilder) {}
 }
