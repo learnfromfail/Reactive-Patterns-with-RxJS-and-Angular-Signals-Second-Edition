@@ -1,4 +1,5 @@
-<div *ngIf="recipes$ | async as recipes" class="card">
+@if (recipes$ | async; as recipes) {
+<div class="card">
   <div>{{ recipes.length }} Results</div>
   <p-dataView
     #dv
@@ -10,11 +11,8 @@
   >
     <ng-template let-recipes pTemplate="gridItem">
       <div class="grid grid-nogutter">
-        <div
-          class="col-12"
-          class="recipe-grid-item card"
-          *ngFor="let recipe of recipes"
-        >
+        @for (recipe of recipes; track recipe.id) {
+        <div class="col-12" class="recipe-grid-item card">
           <div class="recipe-grid-item-top">
             <div>
               <i class="pi pi-tag recipe-category-icon"></i>
@@ -42,7 +40,11 @@
             <p-button class="recipe-favourite" icon="pi pi-heart"></p-button>
           </div>
         </div>
+        }@empty {
+        <div>There are no recipes</div>
+        }
       </div>
     </ng-template>
   </p-dataView>
 </div>
+}

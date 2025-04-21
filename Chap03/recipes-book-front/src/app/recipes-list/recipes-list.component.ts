@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipesService } from '../core/services/recipes.service';
 import { DataViewModule } from 'primeng/dataview';
@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
   ],
   templateUrl: './recipes-list.component.html',
   styleUrls: ['./recipes-list.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecipesListComponent {
   recipes$ = this.service.recipes$;
